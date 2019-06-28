@@ -182,7 +182,7 @@
             call: (msg) => console.log(msg)
         } : window.Native;
 
-        Native[szca.initialize.methodName.callback] = response => {
+        Native[szca.initialize.methodName.callback] = response => { alert(response)
             const resp = nativeMessageHandler.handleResponseSZCAInitialize(response);
 
             (resp.isError || (!!!resp.isError && !!!resp.action)) && closeLoader();
@@ -198,7 +198,7 @@
             !!!resp.isError && resp.action && nativeMessageHandler.nativeAction[resp.action]();
         };
 
-        Native[szca.newApply.methodName.callback] = response => {
+        Native[szca.newApply.methodName.callback] = response => { alert(response)
             const resp = nativeMessageHandler.handleResponseSZCAAuth(response);
 
             updateField('authResp', util.formatJSON(resp));
@@ -206,7 +206,7 @@
             closeLoader();
         }
 
-        Native[szca.resetPIN.methodName.callback] = response => {
+        Native[szca.resetPIN.methodName.callback] = response => { alert(response)
             const resp = nativeMessageHandler.handleResponseSZCAAuth(response);
 
             updateField('authResp', util.formatJSON(resp));
