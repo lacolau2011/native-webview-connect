@@ -1,0 +1,378 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <!-- Compiled and minified CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <!-- Compiled and minified JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <script type="text/javascript">
+        const actionCode = {
+            SZCA_ACTION_NEWAPPLY: 21,
+            SZCA_ACTION_REAPPLY: 22,
+            SZCA_ACTION_RESETPIN: 23,
+            SZCA_ACTION_SIGN: 24,
+            SZCA_ACTION_INITIALIZE: 25
+        }
+        const errorMsg = {
+            errorLicense: "License驗証失敗, 請聯繫客戶服務熱線",
+            errorPIN: "PIN碼驗証失敗, 請聯繫客戶服務熱線",
+            errorOther: "SZCA連接失敗, 請聯繫客戶服務熱線",
+        }
+        const szca = {
+            initialize: {
+                req: {
+                    account: "430703198911172035",
+                    keytype: "RSA",
+                    pwd: "123456",
+                    license: "q1w2e3r4t5y6u7i8o9p0",
+                    url: "123.123.123.123:1801",
+                    name: "皮列文"
+                },
+                resp: {
+                    rtnCode: '1'
+                },
+                methodName: {
+                    call: 'SZCAInitializeCall',
+                    callback: 'SZCAInitializeCallback'
+                },
+                rtnCode: {
+                    "0": {
+                        isError: false
+                    },
+                    "1": {
+                        isError: false,
+                        action: actionCode.SZCA_ACTION_NEWAPPLY
+                    },
+                    "2": {
+                        isError: false,
+                        action: actionCode.SZCA_ACTION_REAPPLY
+                    },
+                    "-1": {
+                        isError: true,
+                        message: errorMsg.errorLicense
+                    },
+                    "-2": {
+                        isError: true,
+                        message: errorMsg.errorPIN
+                    },
+                    "-3": {
+                        isError: true,
+                        message: errorMsg.errorOther
+                    },
+                }
+            },
+            newApply: {
+                req: {},
+                resp: {
+                    id_no: "430703198911172035",
+                    cname: "皮列文",
+                    sex: "男",
+                    birth_date: "19891117",
+                    sms_phone: "+86-135-557-97324",
+                    home_address: "湖南省常德市鼎城区韩公渡镇丰村14村民组",
+                    acc_no: "",
+                    certDn: "CN=李四(测试),OU=软件测试机构,O=70004902-4,L=深圳,ST=广东,C=CN",
+                    certSn: "CN7854214245242",
+                },
+                methodName: {
+                    call: 'SZCAAuthCall',
+                    callback: 'SZCAAuthCallback'
+                }
+            },
+            reApply: {
+                req: {},
+                resp: {
+                    id_no: "430703198911172035",
+                    cname: "皮列文",
+                    sex: "男",
+                    birth_date: "19891117",
+                    sms_phone: "+86-135-557-97324",
+                    home_address: "湖南省常德市鼎城区韩公渡镇丰村14村民组",
+                    acc_no: "",
+                    certDn: "CN=李四(测试),OU=软件测试机构,O=70004902-4,L=深圳,ST=广东,C=CN",
+                    certSn: "CN7854214245242",
+                },
+                methodName: {
+                    call: 'SZCAReApplyCall',
+                    callback: 'SZCAReApplyCallback'
+                }
+            },
+            resetPIN: {
+                req: {},
+                resp: {
+                    id_no: "430703198911172035",
+                    cname: "皮列文",
+                    sex: "男",
+                    birth_date: "19891117",
+                    sms_phone: "+86-135-557-97324",
+                    home_address: "湖南省常德市鼎城区韩公渡镇丰村14村民组",
+                    acc_no: "",
+                    certDn: "CN=李四(测试),OU=软件测试机构,O=70004902-4,L=深圳,ST=广东,C=CN",
+                    certSn: "CN7854214245242",
+                },
+                methodName: {
+                    call: 'SZCAResetPINCall',
+                    callback: 'SZCAResetPINCallback'
+                }
+            }
+        }
+        const util = {
+            formatJSON: (data) => typeof data !== 'string' ? JSON.stringify(data).replace(/{/g, '{\n    ').replace(
+                /","/g, `",\n    "`).replace(/}/g, '\n}') : data
+        }
+        const nativeMessageHandler = {
+            handleResponseSZCAInitialize: response => {
+                var resp = JSON.parse(response);
+                const result = szca.initialize.rtnCode[resp.rtnCode];
+                return result;
+            },
+            handleResponseSZCAAuth: response => {
+                return JSON.parse(response);
+            },
+            nativeAction: {
+                [actionCode.SZCA_ACTION_INITIALIZE]: req => {
+                    Native.call(`${szca.initialize.methodName.call}; ${JSON.stringify(req)}; ${szca.initialize.methodName.callback}`);
+
+                    // Sim response from Native.
+                    setTimeout(() => {
+                        updateField('initResp', util.formatJSON(szca.initialize.resp));
+                        Native[szca.initialize.methodName.callback](JSON.stringify(szca.initialize.resp));
+                    }, 1000);
+                },
+                [actionCode.SZCA_ACTION_NEWAPPLY]: () => {
+                    Native.call(`${szca.newApply.methodName.call}; ; ${szca.newApply.methodName.callback}`);
+
+                    // Sim response from Native.
+                    setTimeout(() => {
+                        updateField('authResp', util.formatJSON(szca.newApply.resp));
+                        Native[szca.newApply.methodName.callback](JSON.stringify(szca.newApply.resp))
+                    }, 1000);
+                },
+                [actionCode.SZCA_ACTION_REAPPLY]: () => {
+                    Native.call(`${szca.reApply.methodName.call}; ; ${szca.reApply.methodName.callback}`);
+
+                    // Sim response from Native.
+                    setTimeout(() => {
+                        updateField('authResp', util.formatJSON(szca.reApply.resp));
+                        Native[szca.newApply.methodName.callback](JSON.stringify(szca.reApply.resp))
+                    }, 1000);
+                },
+                [actionCode.SZCA_ACTION_RESETPIN]: () => {
+                    Native.call(`${szca.resetPIN.methodName.call}; ; ${szca.resetPIN.methodName.callback}`);
+
+                    // Sim response from Native.
+                    setTimeout(() => {
+                        updateField('authResp', util.formatJSON(szca.resetPIN.resp));
+                        Native[szca.resetPIN.methodName.callback](JSON.stringify(szca.resetPIN.resp))
+                    }, 1000);
+                }
+            }
+        }
+        const showLoader = () => document.getElementById('overlay').classList.add("active");
+        const closeLoader = () => document.getElementById('overlay').classList.remove("active");
+        const updateField = (id, val) => {
+            document.getElementById(id).value = val;
+            M.updateTextFields();
+            M.textareaAutoResize(document.getElementById(id));
+        }
+        //Testing, it can be remove when the App is connekcted.
+        Native = !!!window.Native ? {
+            call: (msg) => console.log(msg)
+        } : window.Native;
+
+        Native[szca.initialize.methodName.callback] = response => {
+            const resp = nativeMessageHandler.handleResponseSZCAInitialize(response);
+
+            (resp.isError || (!!!resp.isError && !!!resp.action)) && closeLoader();
+
+            // show Error Message.
+            resp.isError && resp.message && M.toast({
+                html: resp.message
+            });
+
+            updateField('authReq', Object.keys(actionCode).find(key => actionCode[key] === resp.action));
+
+            // For Success Response - Accroding to the return Code to call different action            
+            !!!resp.isError && resp.action && nativeMessageHandler.nativeAction[resp.action]();
+        };
+
+        Native[szca.newApply.methodName.callback] = response => {
+            const resp = nativeMessageHandler.handleResponseSZCAAuth(response);
+
+            updateField('authResp', util.formatJSON(resp));
+
+            closeLoader();
+        }
+
+        Native[szca.resetPIN.methodName.callback] = response => {
+            const resp = nativeMessageHandler.handleResponseSZCAAuth(response);
+
+            updateField('authResp', util.formatJSON(resp));
+
+            closeLoader();
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            var elems = document.querySelectorAll('.modal');
+            var instances = M.Modal.init(elems, {});
+        });
+
+        const setup = () => {
+            updateField('initReq', util.formatJSON(szca.initialize.req));
+
+            document.getElementById('confirmYes').addEventListener("click", e => {
+                showLoader();
+
+                var req = JSON.parse(document.getElementById('initReq').value);
+                // Call For WebView
+                nativeMessageHandler.nativeAction[actionCode.SZCA_ACTION_INITIALIZE](req);
+            });
+
+            document.getElementById('confirmYesPIN').addEventListener("click", e => {
+                showLoader();
+                // Call For WebView
+                nativeMessageHandler.nativeAction[actionCode.SZCA_ACTION_RESETPIN]();
+            });
+        }
+    </script>
+    <style>
+        body {
+            display: flex;
+            min-height: 100vh;
+            flex-direction: column;
+        }
+
+        main {
+            flex: 1 0 auto;
+            padding: 1rem;
+        }
+
+        .mt-1 {
+            margin-top: 2rem;
+        }
+
+        .mt-2 {
+            margin-top: 0.5rem;
+        }
+
+        .btn-block {
+            width: 100%;
+        }
+
+        .card-panel {
+            margin-top: 0;
+            height: 100%;
+        }
+
+        .overlay.active {
+            display: block;
+        }
+
+        .overlay {
+            display: none;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            position: fixed;
+            background: rgba(34, 34, 34, 0.5);
+            z-index: 2;
+        }
+
+        .overlay__inner {
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            position: absolute;
+        }
+
+        .overlay__content {
+            left: 50%;
+            position: absolute;
+            top: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .page-footer {
+            padding: 0;
+            background-color: #009688 !important;
+            font-size: 11px;
+        }
+    </style>
+</head>
+
+<body onLoad="setup();">
+    <main>
+        <div class="card-panel teal">
+            <a class="waves-effect waves-light btn cyan darken-4 col s12 btn-block modal-trigger"
+                href="#confirm">深圳CA驗證</a>
+            <a class="waves-effect waves-light btn cyan darken-4 col s12 btn-block modal-trigger mt-2"
+                href="#confirmResetPIN">深圳CA 重置PIN碼</a>
+            <div class="input-field col s12 mt-1">
+                <textarea id="initReq" class="materialize-textarea white-text" row="7"></textarea>
+                <label for="textarea1" class="white-text">深圳CA初始化請求</label>
+            </div>
+            <div class="input-field col s12 mt-1">
+                <textarea id="initResp" class="materialize-textarea white-text"></textarea>
+                <label for="textarea1" class="white-text">深圳CA初始化返回</label>
+            </div>
+            <div class="input-field col s12 mt-1">
+                <textarea id="authReq" class="materialize-textarea white-text"></textarea>
+                <label for="textarea1" class="white-text">深圳CA驗證請求</label>
+            </div>
+            <div class="input-field col s12 mt-1">
+                <textarea id="authResp" class="materialize-textarea white-text"></textarea>
+                <label for="textarea1" class="white-text">深圳CA驗證返回</label>
+            </div>
+        </div>
+    </main>
+    <footer class="page-footer">
+        <div class="container">
+            版權所有 © 亞洲網上系統有限公司 iAsia Online Systems Limited.
+        </div>
+    </footer>
+    <div id="confirm" class="modal">
+        <div class="modal-content">
+            <h4>確定</h4>
+            <p>通過深圳CA認證 (只限持有大陸身份證用戶)</p>
+        </div>
+        <div class="modal-footer">
+            <a id="confirmYes" href="#!" class="modal-close waves-effect waves-green btn-flat">確定</a>
+            <a id="confirmNo" href="#!" class="modal-close waves-effect waves-red btn-flat">取消</a>
+        </div>
+    </div>
+    <div id="confirmResetPIN" class="modal">
+        <div class="modal-content">
+            <h4>確定</h4>
+            <p>重置PIN碼</p>
+        </div>
+        <div class="modal-footer">
+            <a id="confirmYesPIN" href="#!" class="modal-close waves-effect waves-green btn-flat">確定</a>
+            <a id="confirmNoPIN" href="#!" class="modal-close waves-effect waves-red btn-flat">取消</a>
+        </div>
+    </div>
+    <div id="overlay" class="overlay">
+        <div class="overlay__inner">
+            <div class="overlay__content">
+                <div class="preloader-wrapper big active">
+                    <div class="spinner-layer spinner-blue-only">
+                        <div class="circle-clipper left">
+                            <div class="circle"></div>
+                        </div>
+                        <div class="gap-patch">
+                            <div class="circle"></div>
+                        </div>
+                        <div class="circle-clipper right">
+                            <div class="circle"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
