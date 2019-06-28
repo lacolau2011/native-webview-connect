@@ -185,6 +185,8 @@
         Native[szca.initialize.methodName.callback] = response => { alert(response)
             const resp = nativeMessageHandler.handleResponseSZCAInitialize(response);
 
+            alert(resp)
+
             (resp.isError || (!!!resp.isError && !!!resp.action)) && closeLoader();
 
             // show Error Message.
@@ -198,8 +200,9 @@
             !!!resp.isError && resp.action && nativeMessageHandler.nativeAction[resp.action]();
         };
 
-        Native[szca.newApply.methodName.callback] = response => { alert(response)
+        Native[szca.newApply.methodName.callback] = response => { 
             const resp = nativeMessageHandler.handleResponseSZCAAuth(response);
+            alert(resp)
 
             updateField('authResp', util.formatJSON(resp));
 
@@ -208,6 +211,7 @@
 
         Native[szca.resetPIN.methodName.callback] = response => { alert(response)
             const resp = nativeMessageHandler.handleResponseSZCAAuth(response);
+            alert(resp)
 
             updateField('authResp', util.formatJSON(resp));
 
