@@ -136,37 +136,37 @@
                     Native.call(`${szca.initialize.methodName.call}; ${JSON.stringify(req)}; ${szca.initialize.methodName.callback}`);
 
                     // Sim response from Native.
-                    //setTimeout(() => {
-                    //   updateField('initResp', util.formatJSON(szca.initialize.resp));
-                    //    Native[szca.initialize.methodName.callback](JSON.stringify(szca.initialize.resp));
-                    //}, 1000);
+                    setTimeout(() => {
+                        updateField('initResp', util.formatJSON(szca.initialize.resp));
+                        Native[szca.initialize.methodName.callback](JSON.stringify(szca.initialize.resp));
+                    }, 1000);
                 },
                 [actionCode.SZCA_ACTION_NEWAPPLY]: () => {
                     Native.call(`${szca.newApply.methodName.call}; ; ${szca.newApply.methodName.callback}`);
 
                     // Sim response from Native.
-                    //setTimeout(() => {
-                    //    updateField('authResp', util.formatJSON(szca.newApply.resp));
-                    //    Native[szca.newApply.methodName.callback](JSON.stringify(szca.newApply.resp))
-                    //}, 1000);
+                    setTimeout(() => {
+                        updateField('authResp', util.formatJSON(szca.newApply.resp));
+                        Native[szca.newApply.methodName.callback](JSON.stringify(szca.newApply.resp))
+                    }, 1000);
                 },
                 [actionCode.SZCA_ACTION_REAPPLY]: () => {
                     Native.call(`${szca.reApply.methodName.call}; ; ${szca.reApply.methodName.callback}`);
 
                     // Sim response from Native.
-                    //setTimeout(() => {
-                    //    updateField('authResp', util.formatJSON(szca.reApply.resp));
-                    //    Native[szca.newApply.methodName.callback](JSON.stringify(szca.reApply.resp))
-                    //}, 1000);
+                    setTimeout(() => {
+                        updateField('authResp', util.formatJSON(szca.reApply.resp));
+                        Native[szca.newApply.methodName.callback](JSON.stringify(szca.reApply.resp))
+                    }, 1000);
                 },
                 [actionCode.SZCA_ACTION_RESETPIN]: () => {
                     Native.call(`${szca.resetPIN.methodName.call}; ; ${szca.resetPIN.methodName.callback}`);
 
                     // Sim response from Native.
-                    //setTimeout(() => {
-                    //    updateField('authResp', util.formatJSON(szca.resetPIN.resp));
-                    //    Native[szca.resetPIN.methodName.callback](JSON.stringify(szca.resetPIN.resp))
-                    //}, 1000);
+                    setTimeout(() => {
+                        updateField('authResp', util.formatJSON(szca.resetPIN.resp));
+                        Native[szca.resetPIN.methodName.callback](JSON.stringify(szca.resetPIN.resp))
+                    }, 1000);
                 }
             }
         }
@@ -182,10 +182,8 @@
             call: (msg) => console.log(msg)
         } : window.Native;
 
-        Native[szca.initialize.methodName.callback] = response => { 
+        Native[szca.initialize.methodName.callback] = response => {
             const resp = nativeMessageHandler.handleResponseSZCAInitialize(response);
-
-            alert(response)
 
             (resp.isError || (!!!resp.isError && !!!resp.action)) && closeLoader();
 
@@ -200,10 +198,8 @@
             !!!resp.isError && resp.action && nativeMessageHandler.nativeAction[resp.action]();
         };
 
-        Native[szca.newApply.methodName.callback] = response => { 
+        Native[szca.newApply.methodName.callback] = response => {
             const resp = nativeMessageHandler.handleResponseSZCAAuth(response);
-
-            alert(response)
 
             updateField('authResp', util.formatJSON(resp));
 
@@ -212,8 +208,6 @@
 
         Native[szca.resetPIN.methodName.callback] = response => {
             const resp = nativeMessageHandler.handleResponseSZCAAuth(response);
-
-            alert(response)
 
             updateField('authResp', util.formatJSON(resp));
 
@@ -316,10 +310,8 @@
     </style>
 </head>
 
-<body onLoad="setup();">
-    <div class="fix">
-        v 1.0.1
-    </div>
+<body onLoad="setup();">    
+    <div class="fix">v 1.0.1</div>
     <main>
         <div class="card-panel teal">
             <a class="waves-effect waves-light btn cyan darken-4 col s12 btn-block modal-trigger"
@@ -327,9 +319,13 @@
             <a class="waves-effect waves-light btn cyan darken-4 col s12 btn-block modal-trigger mt-2"
                 href="#confirmResetPIN">深圳CA 重置PIN碼</a>
             <div class="input-field col s12 mt-1">
+                <textarea id="initReq" class="materialize-textarea white-text" row="7"></textarea>
+                <label for="textarea1" class="white-text">深圳CA初始化請求</label>
+            </div>
+            <div class="input-field col s12 mt-1">
                 <textarea id="initResp" class="materialize-textarea white-text"></textarea>
                 <label for="textarea1" class="white-text">深圳CA初始化返回</label>
-            </div>            
+            </div>
             <div class="input-field col s12 mt-1">
                 <textarea id="authReq" class="materialize-textarea white-text"></textarea>
                 <label for="textarea1" class="white-text">深圳CA驗證請求</label>
@@ -337,10 +333,6 @@
             <div class="input-field col s12 mt-1">
                 <textarea id="authResp" class="materialize-textarea white-text"></textarea>
                 <label for="textarea1" class="white-text">深圳CA驗證返回</label>
-            </div>
-            <div class="input-field col s12 mt-1">
-                <textarea id="initReq" class="materialize-textarea white-text" row="7"></textarea>
-                <label for="textarea1" class="white-text">深圳CA初始化請求</label>
             </div>
         </div>
     </main>
