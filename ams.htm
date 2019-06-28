@@ -136,37 +136,36 @@
                     Native.call(`${szca.initialize.methodName.call}; ${JSON.stringify(req)}; ${szca.initialize.methodName.callback}`);
 
                     // Sim response from Native.
-                    setTimeout(() => {
-                        updateField('initResp', util.formatJSON(szca.initialize.resp));
-                        Native[szca.initialize.methodName.callback](JSON.stringify(szca.initialize.resp));
-                    }, 1000);
+                    //setTimeout(() => {                        
+                    //    Native[szca.initialize.methodName.callback](JSON.stringify(szca.initialize.resp));
+                    //}, 1000);
                 },
                 [actionCode.SZCA_ACTION_NEWAPPLY]: () => {
                     Native.call(`${szca.newApply.methodName.call}; ; ${szca.newApply.methodName.callback}`);
 
                     // Sim response from Native.
-                    setTimeout(() => {
-                        updateField('authResp', util.formatJSON(szca.newApply.resp));
-                        Native[szca.newApply.methodName.callback](JSON.stringify(szca.newApply.resp))
-                    }, 1000);
+                    //setTimeout(() => {
+                    //    
+                    //    Native[szca.newApply.methodName.callback](JSON.stringify(szca.newApply.resp))
+                    //}, 1000);
                 },
                 [actionCode.SZCA_ACTION_REAPPLY]: () => {
                     Native.call(`${szca.reApply.methodName.call}; ; ${szca.reApply.methodName.callback}`);
 
                     // Sim response from Native.
-                    setTimeout(() => {
-                        updateField('authResp', util.formatJSON(szca.reApply.resp));
-                        Native[szca.newApply.methodName.callback](JSON.stringify(szca.reApply.resp))
-                    }, 1000);
+                    //setTimeout(() => {
+                    //    updateField('authResp', util.formatJSON(szca.reApply.resp));
+                    //    Native[szca.newApply.methodName.callback](JSON.stringify(szca.reApply.resp))
+                    //}, 1000);
                 },
                 [actionCode.SZCA_ACTION_RESETPIN]: () => {
                     Native.call(`${szca.resetPIN.methodName.call}; ; ${szca.resetPIN.methodName.callback}`);
 
                     // Sim response from Native.
-                    setTimeout(() => {
-                        updateField('authResp', util.formatJSON(szca.resetPIN.resp));
-                        Native[szca.resetPIN.methodName.callback](JSON.stringify(szca.resetPIN.resp))
-                    }, 1000);
+                    //setTimeout(() => {
+                    //    updateField('authResp', util.formatJSON(szca.resetPIN.resp));
+                    //    Native[szca.resetPIN.methodName.callback](JSON.stringify(szca.resetPIN.resp))
+                    //}, 1000);
                 }
             }
         }
@@ -182,7 +181,9 @@
             call: (msg) => console.log(msg)
         } : window.Native;
 
-        Native[szca.initialize.methodName.callback] = response => {
+        Native[szca.initialize.methodName.callback] = response => {            
+            updateField('initResp', util.formatJSON(response));
+
             const resp = nativeMessageHandler.handleResponseSZCAInitialize(response);
 
             (resp.isError || (!!!resp.isError && !!!resp.action)) && closeLoader();
