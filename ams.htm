@@ -182,10 +182,10 @@
             call: (msg) => console.log(msg)
         } : window.Native;
 
-        Native[szca.initialize.methodName.callback] = response => { alert(response)
+        Native[szca.initialize.methodName.callback] = response => { 
             const resp = nativeMessageHandler.handleResponseSZCAInitialize(response);
 
-            alert(resp)
+            alert(response)
 
             (resp.isError || (!!!resp.isError && !!!resp.action)) && closeLoader();
 
@@ -202,16 +202,18 @@
 
         Native[szca.newApply.methodName.callback] = response => { 
             const resp = nativeMessageHandler.handleResponseSZCAAuth(response);
-            alert(resp)
+
+            alert(response)
 
             updateField('authResp', util.formatJSON(resp));
 
             closeLoader();
         }
 
-        Native[szca.resetPIN.methodName.callback] = response => { alert(response)
+        Native[szca.resetPIN.methodName.callback] = response => {
             const resp = nativeMessageHandler.handleResponseSZCAAuth(response);
-            alert(resp)
+
+            alert(response)
 
             updateField('authResp', util.formatJSON(resp));
 
@@ -316,7 +318,7 @@
 
 <body onLoad="setup();">
     <div class="fix">
-        v 1.0.0
+        v 1.0.1
     </div>
     <main>
         <div class="card-panel teal">
