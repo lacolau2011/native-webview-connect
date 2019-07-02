@@ -118,12 +118,14 @@
                 }
             }
         }
-        const util = {            
-            formatJSON: (data) => typeof data !== 'string' ? JSON.stringify(data).replace(/{/g, '{\n ').replace(/","/g, `",\n "`).replace(/}/g, '\n}') : data
+        const util = {
+            formatJSON: (data) => typeof data !== 'string' ? JSON.stringify(data).replace(/{/g, '{\n    ').replace(
+                /","/g, `",\n    "`).replace(/}/g, '\n}') : data
         }
         const nativeMessageHandler = {
-            handleResponseSZCAInitialize: response => {                
-                const result = szca.initialize.rtnCode[response.rtnCode];
+            handleResponseSZCAInitialize: response => {
+                var resp = JSON.parse(response);
+                const result = szca.initialize.rtnCode[resp.rtnCode];
                 return result;
             },
             handleResponseSZCAAuth: response => {
@@ -134,32 +136,36 @@
                     Native.call(`${szca.initialize.methodName.call}; ${JSON.stringify(req)}; ${szca.initialize.methodName.callback}`);
 
                     // Sim response from Native.
-                    setTimeout(() => {                        
-                        Native[szca.initialize.methodName.callback](szca.initialize.resp);
+                    setTimeout(() => {
+                        updateField('initResp', util.formatJSON(szca.initialize.resp));
+                        Native[szca.initialize.methodName.callback](JSON.stringify(szca.initialize.resp));
                     }, 1000);
                 },
                 [actionCode.SZCA_ACTION_NEWAPPLY]: () => {
                     Native.call(`${szca.newApply.methodName.call}; ; ${szca.newApply.methodName.callback}`);
 
                     // Sim response from Native.
-                    setTimeout(() => {                        
-                        Native[szca.newApply.methodName.callback](szca.newApply.resp)
+                    setTimeout(() => {
+                        updateField('authResp', util.formatJSON(szca.newApply.resp));
+                        Native[szca.newApply.methodName.callback](JSON.stringify(szca.newApply.resp))
                     }, 1000);
                 },
                 [actionCode.SZCA_ACTION_REAPPLY]: () => {
                     Native.call(`${szca.reApply.methodName.call}; ; ${szca.reApply.methodName.callback}`);
 
                     // Sim response from Native.
-                    setTimeout(() => {                        
-                        Native[szca.newApply.methodName.callback](szca.reApply.resp)
+                    setTimeout(() => {
+                        updateField('authResp', util.formatJSON(szca.reApply.resp));
+                        Native[szca.newApply.methodName.callback](JSON.stringify(szca.reApply.resp))
                     }, 1000);
                 },
                 [actionCode.SZCA_ACTION_RESETPIN]: () => {
                     Native.call(`${szca.resetPIN.methodName.call}; ; ${szca.resetPIN.methodName.callback}`);
 
                     // Sim response from Native.
-                    setTimeout(() => {                        
-                        Native[szca.resetPIN.methodName.callback](szca.resetPIN.resp)
+                    setTimeout(() => {
+                        updateField('authResp', util.formatJSON(szca.resetPIN.resp));
+                        Native[szca.resetPIN.methodName.callback](JSON.stringify(szca.resetPIN.resp))
                     }, 1000);
                 }
             }
@@ -176,9 +182,7 @@
             call: (msg) => console.log(msg)
         } : window.Native;
 
-        Native[szca.initialize.methodName.callback] = response => {            
-            updateField('initResp', util.formatJSON(response));
-
+        Native[szca.initialize.methodName.callback] = response => {
             const resp = nativeMessageHandler.handleResponseSZCAInitialize(response);
 
             (resp.isError || (!!!resp.isError && !!!resp.action)) && closeLoader();
@@ -195,19 +199,9 @@
         };
 
         Native[szca.newApply.methodName.callback] = response => {
-            //const resp = nativeMessageHandler.handleResponseSZCAAuth(response);
+            const resp = nativeMessageHandler.handleResponseSZCAAuth(response);
 
-            // Test the response show on textarea.
-            updateField('authResp', util.formatJSON(response));
-
-            closeLoader();
-        }
-
-        Native[szca.reApply.methodName.callback] = response => {
-            //const resp = nativeMessageHandler.handleResponseSZCAAuth(response);
-
-            // Test the response show on textarea. 
-            updateField('authResp', util.formatJSON(response));
+            updateField('authResp', util.formatJSON(resp));
 
             closeLoader();
         }
@@ -317,7 +311,7 @@
 </head>
 
 <body onLoad="setup();">    
-    <div class="fix">v 1.0.2</div>
+    <div class="fix">v 1.0.0</div>
     <main>
         <div class="card-panel teal">
             <a class="waves-effect waves-light btn cyan darken-4 col s12 btn-block modal-trigger"
