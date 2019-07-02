@@ -200,9 +200,19 @@
         };
 
         Native[szca.newApply.methodName.callback] = response => {
-            const resp = nativeMessageHandler.handleResponseSZCAAuth(response);
+            //const resp = nativeMessageHandler.handleResponseSZCAAuth(response);
 
-            updateField('authResp', util.formatJSON(resp));
+            // Test the response show on textarea.
+            updateField('authResp', util.formatJSON(response));
+
+            closeLoader();
+        }
+
+        Native[szca.reApply.methodName.callback] = response => {
+            //const resp = nativeMessageHandler.handleResponseSZCAAuth(response);
+
+            // Test the response show on textarea. 
+            updateField('authResp', util.formatJSON(response));
 
             closeLoader();
         }
