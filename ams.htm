@@ -134,33 +134,33 @@
                     Native.call(`${szca.initialize.methodName.call}; ${JSON.stringify(req)}; ${szca.initialize.methodName.callback}`);
 
                     // Sim response from Native.
-                    setTimeout(() => {                        
-                        Native[szca.initialize.methodName.callback](szca.initialize.resp);
-                    }, 1000);
+                    //setTimeout(() => {                        
+                    //    Native[szca.initialize.methodName.callback](szca.initialize.resp);
+                    //}, 1000);
                 },
                 [actionCode.SZCA_ACTION_NEWAPPLY]: () => {
                     Native.call(`${szca.newApply.methodName.call}; ; ${szca.newApply.methodName.callback}`);
 
                     // Sim response from Native.
-                    setTimeout(() => {                        
-                        Native[szca.newApply.methodName.callback](szca.newApply.resp)
-                    }, 1000);
+                    //setTimeout(() => {                        
+                    //    Native[szca.newApply.methodName.callback](szca.newApply.resp)
+                    //}, 1000);
                 },
                 [actionCode.SZCA_ACTION_REAPPLY]: () => {
                     Native.call(`${szca.reApply.methodName.call}; ; ${szca.reApply.methodName.callback}`);
 
                     // Sim response from Native.
-                    setTimeout(() => {                        
-                        Native[szca.newApply.methodName.callback](szca.reApply.resp)
-                    }, 1000);
+                    //setTimeout(() => {                        
+                    //    Native[szca.newApply.methodName.callback](szca.reApply.resp)
+                    //}, 1000);
                 },
                 [actionCode.SZCA_ACTION_RESETPIN]: () => {
                     Native.call(`${szca.resetPIN.methodName.call}; ; ${szca.resetPIN.methodName.callback}`);
 
                     // Sim response from Native.
-                    setTimeout(() => {                        
-                        Native[szca.resetPIN.methodName.callback](szca.resetPIN.resp)
-                    }, 1000);
+                    //setTimeout(() => {                        
+                    //    Native[szca.resetPIN.methodName.callback](szca.resetPIN.resp)
+                    //}, 1000);
                 }
             }
         }
