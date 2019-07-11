@@ -1,0 +1,23 @@
+{
+  "name": "native-webview-connect",
+  "version": "1.0.0",
+  "description": "Try the demo on https://lacolau2011.github.io/native-webview-connect/ams.htm",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "deploy": "gh-pages -d front-end"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lacolau2011/native-webview-connect.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/lacolau2011/native-webview-connect/issues"
+  },
+  "homepage": "https://github.com/lacolau2011/native-webview-connect/",
+  "dependencies": {
+    "gh-pages": "^2.0.1"
+  }
+}
